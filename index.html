@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MotionLab — Video Editing for Minecraft Servers, Creators & Brands</title>
+<meta name="description" content="MotionLab edits trailers, recaps, and promos for Minecraft server owners, content creators, and business owners. Shorts and long-form, handled.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0a0a0a;
+    --black-soft:#111111;
+    --white:#f5f5f3;
+    --gray:#8a8a8a;
+    --gray-dim:#4a4a4a;
+    --line:#262626;
+    --display: "Archivo Black", "Inter", sans-serif;
+    --body: "Inter", sans-serif;
+    --mono: "JetBrains Mono", monospace;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--black);
+    color:var(--white);
+    font-family:var(--body);
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{display:block;max-width:100%;}
+
+  :focus-visible{
+    outline:2px solid var(--white);
+    outline-offset:3px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important;}
+  }
+
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 32px;
+  }
+
+  /* ---------- Jagged clip-path slash, derived from the logo mark ---------- */
+  .slash-clip{
+    clip-path: polygon(0% 8%, 78% 0%, 100% 0%, 100% 92%, 22% 100%, 0% 100%);
+  }
+  .slash-clip-r{
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 22% 100%, 0% 84%);
+  }
+
+  /* ---------- Scroll-reveal system ---------- */
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.is-visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+  .reveal-stagger.is-visible{transition-delay:var(--d, 0s);}
+
+  /* ---------- Hero load-in ---------- */
+  @keyframes fadeUp{
+    from{opacity:0; transform:translateY(22px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .hero-anim{
+    opacity:0;
+    animation:fadeUp 0.8s ease forwards;
+  }
+
+  /* ---------- Reviews grid ---------- */
+  .reviews-section{
+    padding:120px 0 100px;
+    border-top:1px solid var(--line);
+  }
+  .reviews-head{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    flex-wrap:wrap;
+    margin-bottom:48px;
+  }
+  .reviews-head h2{
+    font-family:var(--display);
+    font-size:clamp(28px,4.5vw,44px);
+    text-transform:uppercase;
+    line-height:1.05;
+  }
+  .rating-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--gray);
+    border:1px solid var(--line);
+    padding:8px 14px;
+    border-radius:999px;
+  }
+  .stars-inline{
+    color:var(--white);
+    letter-spacing:1px;
+    font-size:13px;
+  }
+  .reviews-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+  }
+  .review-card{
+    background:var(--black-soft);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:24px 22px;
+    transition:transform 0.25s ease, border-color 0.25s ease;
+  }
+  .review-card:hover{
+    transform:translateY(-4px) scale(1.02);
+    border-color:var(--gray-dim);
+  }
+  .review-card-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .r-name{
+    font-family:var(--body);
+    font-weight:700;
+    font-size:15px;
+    color:var(--white);
+  }
+  .r-badge{
+    font-family:var(--mono);
+    font-size:10px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--gray);
+    border:1px solid var(--line);
+    padding:4px 9px;
+    border-radius:5px;
+    white-space:nowrap;
+  }
+  .r-stars{
+    color:var(--white);
+    letter-spacing:2px;
+    font-size:13px;
+    margin-bottom:12px;
+  }
+  .r-quote{
+    color:var(--gray);
+    font-size:14px;
+    line-height:1.6;
+  }
+  @media (max-width:900px){
+    .reviews-grid{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (max-width:600px){
+    .reviews-grid{grid-template-columns:1fr;}
+  }
+
+  /* ---------- NAV ---------- */
+  header{
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:100;
+    background:rgba(10,10,10,0.88);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  nav{
+    max-width:1180px;
+    margin:0 auto;
+    padding:18px 32px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .logo-group{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .logo-group img{
+    height:30px;
+    width:30px;
+  }
+  .logo-group span{
+    font-family:var(--display);
+    font-size:17px;
+    letter-spacing:0.02em;
+  }
+  .nav-links{
+    display:flex;
+    gap:36px;
+    align-items:center;
+  }
+  .nav-links a{
+    color:var(--gray);
+    text-decoration:none;
+    font-size:14px;
+    font-weight:500;
+    transition:color 0.2s;
+  }
+  .nav-links a:hover{color:var(--white);}
+  .nav-cta{
+    background:var(--white);
+    color:var(--black);
+    padding:10px 20px;
+    font-size:14px;
+    font-weight:700;
+    text-decoration:none;
+    clip-path: polygon(0% 0%, 88% 0%, 100% 100%, 12% 100%);
+    transition:background 0.2s;
+  }
+  .nav-cta:hover{background:#5865F2; color:var(--white);}
+  .nav-toggle{display:none;}
+
+  @media (max-width:760px){
+    .nav-links{
+      position:fixed;
+      top:67px; left:0; right:0;
+      background:var(--black-soft);
+      flex-direction:column;
+      gap:0;
+      border-bottom:1px solid var(--line);
+      max-height:0;
+      overflow:hidden;
+      transition:max-height 0.3s ease;
+    }
+    .nav-links.open{max-height:320px;}
+    .nav-links a{
+      padding:18px 32px;
+      width:100%;
+      border-bottom:1px solid var(--line);
+    }
+    .nav-cta{margin:18px 32px;}
+    .nav-toggle{
+      display:block;
+      background:none;
+      border:none;
+      color:var(--white);
+      font-size:24px;
+      cursor:pointer;
+      line-height:1;
+    }
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    position:relative;
+    padding-top:120px;
+    padding-bottom:80px;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 0%, rgba(245,245,243,0.07), transparent 70%),
+      var(--black);
+  }
+  @keyframes pulse{
+    0%,100%{opacity:1;}
+    50%{opacity:0.3;}
+  }
+  .hero h1{
+    font-family:var(--display);
+    font-size:clamp(40px, 7.5vw, 92px);
+    line-height:0.98;
+    letter-spacing:-0.01em;
+    text-transform:uppercase;
+    max-width:980px;
+  }
+  .hero h1 .cut{
+    background:var(--white);
+    color:var(--black);
+    padding:0 14px;
+    display:inline-block;
+    clip-path: polygon(0% 10%, 92% 0%, 100% 90%, 8% 100%);
+  }
+  .hero-sub{
+    margin-top:28px;
+    font-size:clamp(16px,2vw,19px);
+    color:var(--gray);
+    max-width:560px;
+    line-height:1.6;
+  }
+  .tagline{
+    margin-top:20px;
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--white);
+    font-weight:700;
+  }
+  .hero-actions{
+    margin-top:44px;
+    display:flex;
+    gap:18px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+  .btn-primary{
+    background:var(--white);
+    color:var(--black);
+    font-weight:700;
+    font-size:15px;
+    padding:16px 30px;
+    text-decoration:none;
+    clip-path: polygon(0% 0%, 94% 0%, 100% 100%, 6% 100%);
+    transition:transform 0.15s, background 0.2s;
+    display:inline-block;
+  }
+  .btn-primary:hover{background:var(--gray); transform:translateY(-2px);}
+  .btn-discord:hover{
+    background:#5865F2;
+    color:var(--white);
+    transform:translateY(-2px);
+  }
+  .btn-secondary{
+    color:var(--white);
+    font-weight:600;
+    font-size:15px;
+    text-decoration:none;
+    border-bottom:1px solid var(--gray-dim);
+    padding-bottom:4px;
+    transition:border-color 0.2s;
+  }
+  .btn-secondary:hover{border-color:var(--white);}
+
+  .hero-strip{
+    margin-top:90px;
+    display:flex;
+    gap:0;
+    border-top:1px solid var(--line);
+    flex-wrap:wrap;
+  }
+  .hero-strip div{
+    flex:1;
+    min-width:140px;
+    padding:18px 0 0;
+    border-right:1px solid var(--line);
+    padding-right:20px;
+  }
+  .hero-strip div:last-child{border-right:none;}
+  .hero-strip .num{
+    font-family:var(--mono);
+    font-size:26px;
+    font-weight:700;
+  }
+  .hero-strip .label{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--gray);
+    letter-spacing:0.05em;
+    margin-top:4px;
+    text-transform:uppercase;
+  }
+
+  /* ---------- SECTION LABEL ---------- */
+  .section-label{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.12em;
+    color:var(--white);
+    text-transform:uppercase;
+    margin-bottom:14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .section-label::before{
+    content:"";
+    width:18px; height:1px;
+    background:var(--white);
+  }
+
+  /* ---------- TRACKS (services) ---------- */
+  .tracks{
+    padding:140px 0 100px;
+    border-top:1px solid var(--line);
+  }
+  .tracks h2{
+    font-family:var(--display);
+    font-size:clamp(30px,4.5vw,48px);
+    text-transform:uppercase;
+    max-width:680px;
+    line-height:1.08;
+    margin-bottom:60px;
+  }
+  .track-list{
+    display:flex;
+    flex-direction:column;
+  }
+  .track{
+    display:grid;
+    grid-template-columns:90px 1fr 1fr;
+    gap:32px;
+    padding:38px 0;
+    border-top:1px solid var(--line);
+    align-items:start;
+    transition:background 0.25s, padding-left 0.25s;
+  }
+  .track:hover{
+    background:rgba(245,245,243,0.03);
+    padding-left:14px;
+  }
+  .track:hover h3{transform:translateX(4px);}
+  .track:last-child{border-bottom:1px solid var(--line);}
+  .track-tag{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--gray);
+    padding-top:4px;
+  }
+  .track-tag.primary{color:var(--white); font-weight:700;}
+  .track h3{
+    font-family:var(--display);
+    font-size:clamp(20px,2.6vw,28px);
+    text-transform:uppercase;
+    line-height:1.15;
+    transition:transform 0.25s;
+  }
+  .track p{
+    color:var(--gray);
+    font-size:15px;
+    line-height:1.7;
+  }
+  .track .deliverables{
+    margin-top:14px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .track .deliverables span{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--white);
+    border:1px solid var(--line);
+    padding:5px 10px;
+  }
+  @media (max-width:760px){
+    .track{grid-template-columns:1fr; gap:14px;}
+    .track-tag{padding-top:0;}
+  }
+
+  /* ---------- PRICING TEASER ---------- */
+  .pricing{
+    padding:100px 0;
+    border-top:1px solid var(--line);
+  }
+  .pricing-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    margin-bottom:50px;
+    gap:24px;
+    flex-wrap:wrap;
+  }
+  .pricing h2{
+    font-family:var(--display);
+    font-size:clamp(30px,4.5vw,48px);
+    text-transform:uppercase;
+    line-height:1.08;
+    max-width:600px;
+  }
+  .pricing-note{
+    color:var(--gray);
+    font-size:14px;
+    max-width:300px;
+    line-height:1.6;
+  }
+  .pricing-subhead{
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--gray);
+    margin:0 0 22px;
+    padding-top:36px;
+    border-top:1px solid var(--line);
+  }
+  .pricing > .wrap > .pricing-subhead:first-of-type{
+    padding-top:0;
+    border-top:none;
+  }
+  .tier-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:24px;
+    margin-bottom:20px;
+  }
+  .price-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:24px;
+  }
+  .price-card{
+    border:1px solid var(--line);
+    padding:34px 28px;
+    position:relative;
+    transition:border-color 0.2s, transform 0.2s;
+  }
+  .price-card:hover{border-color:var(--gray-dim); transform:translateY(-4px);}
+  .price-card.featured{
+    border-color:var(--white);
+    background:linear-gradient(180deg, rgba(245,245,243,0.05), transparent 60%);
+  }
+  .price-card .badge{
+    position:absolute;
+    top:-1px; right:-1px;
+    background:var(--white);
+    color:var(--black);
+    font-family:var(--mono);
+    font-size:10px;
+    padding:5px 10px;
+    letter-spacing:0.05em;
+  }
+  .price-card .audience{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--gray);
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    margin-bottom:16px;
+  }
+  .price-card h3{
+    font-family:var(--display);
+    font-size:22px;
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .price-card .price{
+    font-family:var(--mono);
+    font-size:14px;
+    color:var(--white);
+    font-weight:700;
+    margin-bottom:20px;
+  }
+  .price-card ul{
+    list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .price-card li{
+    font-size:13.5px;
+    color:var(--gray);
+    padding-left:16px;
+    position:relative;
+    line-height:1.5;
+  }
+  .price-card li::before{
+    content:"—";
+    position:absolute;
+    left:0;
+    color:var(--gray-dim);
+  }
+  @media (max-width:900px){
+    .tier-grid{grid-template-columns:1fr;}
+    .price-grid{grid-template-columns:1fr;}
+  }
+
+  /* ---------- CTA / DISCORD ---------- */
+  .cta-band{
+    padding:120px 0;
+    border-top:1px solid var(--line);
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .cta-band::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:radial-gradient(ellipse 50% 60% at 50% 100%, rgba(245,245,243,0.08), transparent 70%);
+    pointer-events:none;
+  }
+  .cta-band img{
+    width:64px;
+    margin:0 auto 28px;
+    opacity:0.92;
+  }
+  .cta-band h2{
+    font-family:var(--display);
+    font-size:clamp(32px,6vw,64px);
+    text-transform:uppercase;
+    line-height:1.05;
+    max-width:780px;
+    margin:0 auto 24px;
+  }
+  .cta-band p{
+    color:var(--gray);
+    font-size:16px;
+    max-width:480px;
+    margin:0 auto 40px;
+    line-height:1.6;
+  }
+  .cta-actions{
+    display:flex;
+    gap:18px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top:1px solid var(--line);
+    padding:50px 0 36px;
+  }
+  .footer-grid{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:32px;
+    margin-bottom:36px;
+  }
+  .footer-brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .footer-brand img{height:24px; width:24px;}
+  .footer-brand span{
+    font-family:var(--display);
+    font-size:15px;
+  }
+  .footer-links{
+    display:flex;
+    gap:40px;
+    flex-wrap:wrap;
+  }
+  .footer-links a{
+    color:var(--gray);
+    text-decoration:none;
+    font-size:13px;
+  }
+  .footer-links a:hover{color:var(--white);}
+  .footer-links a.footer-discord:hover{color:#5865F2;}
+  .footer-bottom{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+    padding-top:24px;
+    border-top:1px solid var(--line);
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--gray-dim);
+  }
+
+  section{scroll-margin-top:80px;}
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo-group">
+      <img src="assets/logo-mark.png" alt="MotionLab logo">
+      <span>MOTIONLAB</span>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="#tracks">Services</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#contact" class="nav-cta">Join Discord</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <h1 class="hero-anim" style="animation-delay:0s">Edits that make<br>your <span class="cut">server</span><br>worth joining.</h1>
+      <p class="hero-sub hero-anim" style="animation-delay:0.15s">We aim to provide the best marketing solutions out there for your channel or a Minecraft server!</p>
+      <p class="tagline hero-anim" style="animation-delay:0.28s">Your vision. Our motion.</p>
+      <div class="hero-actions hero-anim" style="animation-delay:0.4s">
+        <a href="#contact" class="btn-primary">Order Now</a>
+        <a href="#tracks" class="btn-secondary">See what we make ↓</a>
+      </div>
+      <div class="hero-strip hero-anim" style="animation-delay:0.55s">
+        <div><div class="num">2–3 Days</div><div class="label">Typical turnaround</div></div>
+        <div><div class="num">15+</div><div class="label">Satisfied clients</div></div>
+        <div><div class="num">Shorts + Long</div><div class="label">One team, both formats</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section class="reviews-section" id="reviews">
+    <div class="wrap">
+      <div class="section-label reveal">Reviews</div>
+      <div class="reviews-head reveal">
+        <h2>What clients say</h2>
+        <div class="rating-badge"><span class="stars-inline">★★★★★</span> 4.9 · <span id="reviewCount">8</span> reviews</div>
+      </div>
+      <div class="reviews-grid" id="reviewsGrid">
+        <div class="review-card reveal">
+          <div class="review-card-top">
+            <span class="r-name">Revyro</span>
+            <span class="r-badge">Discord</span>
+          </div>
+          <div class="r-stars">★★★★★</div>
+          <p class="r-quote">Good short for $4, it was quick and perfect for what I asked for, would highly recommend using these guys — they are good.</p>
+        </div>
+        <div class="review-card reveal">
+          <div class="review-card-top">
+            <span class="r-name">Cosmo</span>
+            <span class="r-badge">Discord</span>
+          </div>
+          <div class="r-stars">★★★★★</div>
+          <p class="r-quote">Great, well done, high quality shorts. Done in a good timely manner, which I really appreciate. I would recommend MotionLab to anyone!</p>
+        </div>
+        <div class="review-card reveal">
+          <div class="review-card-top">
+            <span class="r-name">Maik</span>
+            <span class="r-badge">Discord</span>
+          </div>
+          <div class="r-stars">★★★★☆</div>
+          <p class="r-quote">Got a nice short, probably going to buy a lot more in the future. Only the wait was a little long.</p>
+        </div>
+        <div class="review-card reveal">
+          <div class="review-card-top">
+            <span class="r-name">itzDipsaN</span>
+            <span class="r-badge">Discord</span>
+          </div>
+          <div class="r-stars">★★★★★</div>
+          <p class="r-quote">Quick and high quality shorts, didn't complain. Did everything we asked them to do.</p>
+        </div>
+        <div class="review-card reveal">
+          <div class="review-card-top">
+            <span class="r-name">goldsonic100</span>
+            <span class="r-badge">Discord</span>
+          </div>
+          <div class="r-stars">★★★★★</div>
+          <p class="r-quote">Peak short, delivered in a day.</p>
+        </div>
+        <div class="review-card reveal">
+          <div class="review-card-top">
+            <span class="r-name">ssensitive.</span>
+            <span class="r-badge">Discord</span>
+          </div>
+          <div class="r-stars">★★★★★</div>
+          <p class="r-quote">Short was delivered at excellent timing! Easy to work with! Amazing shorts!</p>
+        </div>
+        <div class="review-card reveal">
+          <div class="review-card-top">
+            <span class="r-name">jackpot104147</span>
+            <span class="r-badge">Discord</span>
+          </div>
+          <div class="r-stars">★★★★★</div>
+          <p class="r-quote">This was great. They helped me get in touch with exactly the person I needed and get some high-quality shorts.</p>
+        </div>
+        <div class="review-card reveal">
+          <div class="review-card-top">
+            <span class="r-name">nettycrasher</span>
+            <span class="r-badge">Discord</span>
+          </div>
+          <div class="r-stars">★★★★★</div>
+          <p class="r-quote">Good short for $4 and very cheap, and a nice guy too.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRACKS / SERVICES -->
+  <section class="tracks" id="tracks">
+    <div class="wrap">
+      <div class="section-label">What we cut</div>
+      <h2 class="reveal">Three audiences. One editing standard.</h2>
+      <div class="track-list">
+
+        <div class="track reveal">
+          <div class="track-tag primary">01 — LEAD</div>
+          <div>
+            <h3>Minecraft Server Owners</h3>
+            <p>Trailers, season launches, and "best of the SMP" recaps built to convert viewers into players. We understand pacing for server promo content — not just generic montage editing.</p>
+          </div>
+          <div>
+            <div class="deliverables">
+              <span>Server trailers</span>
+              <span>Launch hype videos</span>
+              <span>Weekly recaps</span>
+              <span>Event highlight reels</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="track reveal">
+          <div class="track-tag">02</div>
+          <div>
+            <h3>Content Creators</h3>
+            <p>Shorts for YouTube, TikTok, and Reels that keep retention high — plus long-form edits for main-channel uploads, vlogs, and let's-plays that need a second pair of hands.</p>
+          </div>
+          <div>
+            <div class="deliverables">
+              <span>Shorts / Reels</span>
+              <span>Long-form uploads</span>
+              <span>Thumbnails</span>
+              <span>Multi-cam podcasts</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="track reveal">
+          <div class="track-tag">03</div>
+          <div>
+            <h3>Business Owners</h3>
+            <p>Clean, brand-safe promo and ad cutdowns for businesses that need video content but don't have an in-house editor — product demos, testimonials, social ads.</p>
+          </div>
+          <div>
+            <div class="deliverables">
+              <span>Promo videos</span>
+              <span>Ad cutdowns</span>
+              <span>Testimonial edits</span>
+              <span>Social content</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="pricing" id="pricing">
+    <div class="wrap">
+      <div class="pricing-head">
+        <h2 class="reveal">Pricing that scales with your content.</h2>
+        <p class="pricing-note">Starting rates below, in USD. Examples of every short-form tier are posted in our Discord. DM us for an exact quote.</p>
+      </div>
+
+      <h3 class="pricing-subhead">Short-Form — pick your tier</h3>
+      <div class="tier-grid">
+
+        <div class="price-card reveal reveal-stagger" style="--d:0s">
+          <div class="audience">Tier 01</div>
+          <h3>Starter Cut</h3>
+          <div class="price">$2 / video</div>
+          <ul>
+            <li>Clean cut &amp; captions</li>
+            <li>1 revision</li>
+            <li>2–3 day turnaround</li>
+          </ul>
+        </div>
+
+        <div class="price-card featured reveal reveal-stagger" style="--d:0.1s">
+          <div class="badge">MOST BOOKED</div>
+          <div class="audience">Tier 02</div>
+          <h3>Enhanced Cut</h3>
+          <div class="price">$4 / video</div>
+          <ul>
+            <li>Everything in Tier 01</li>
+            <li>Sound design &amp; pacing pass</li>
+            <li>1 revision</li>
+            <li>2–3 day turnaround</li>
+          </ul>
+        </div>
+
+        <div class="price-card reveal reveal-stagger" style="--d:0.2s">
+          <div class="audience">Tier 03</div>
+          <h3>Premium Cut</h3>
+          <div class="price">$6 / video</div>
+          <ul>
+            <li>Everything in Tier 02</li>
+            <li>Advanced animations &amp; transitions</li>
+            <li>1 revision</li>
+            <li>2–3 day turnaround</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <h3 class="pricing-subhead">Bigger formats</h3>
+      <div class="price-grid">
+
+        <div class="price-card reveal reveal-stagger" style="--d:0s">
+          <div class="audience">For server owners</div>
+          <h3>Server Trailer</h3>
+          <div class="price">Starts at $20 / video</div>
+          <ul>
+            <li>1–5 minute trailer</li>
+            <li>Animations included</li>
+            <li>1 revision</li>
+            <li>2–3 day turnaround</li>
+          </ul>
+        </div>
+
+        <div class="price-card reveal reveal-stagger" style="--d:0.1s">
+          <div class="audience">For creators &amp; brands</div>
+          <h3>Long-Form</h3>
+          <div class="price">Starts at $20 / video</div>
+          <ul>
+            <li>Full-length edit, any runtime</li>
+            <li>Some animations included — more animation, higher quote</li>
+            <li>2 revisions</li>
+            <li>2–3 day turnaround</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-band" id="contact">
+    <div class="wrap">
+      <img src="assets/logo-mark.png" alt="MotionLab mark" class="reveal">
+      <h2 class="reveal">Let's cut your<br>next upload.</h2>
+      <p class="reveal">Join the Discord, drop your footage, and get a free sample edit before you commit to anything.</p>
+      <div class="cta-actions reveal">
+        <a href="https://discord.gg/FasVTp6YAv" class="btn-primary btn-discord" target="_blank" rel="noopener">Join the Discord →</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="assets/logo-mark.png" alt="MotionLab logo">
+        <span>MOTIONLAB</span>
+      </div>
+      <div class="footer-links">
+        <a href="#tracks">Services</a>
+        <a href="#pricing">Pricing</a>
+        <a href="https://discord.gg/FasVTp6YAv" class="footer-discord" target="_blank" rel="noopener">Discord</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 MOTIONLAB. ALL RIGHTS RESERVED.</span>
+      <span>MOTIONLAB.IN</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const toggle = document.getElementById('navToggle');
+  const links = document.getElementById('navLinks');
+  toggle.addEventListener('click', () => {
+    const isOpen = links.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', isOpen);
+  });
+  links.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      links.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // Scroll-reveal: fade/slide elements in as they enter the viewport
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  revealEls.forEach(el => revealObserver.observe(el));
+
+  // Reviews count: keep the badge in sync with however many cards exist
+  const reviewsGrid = document.getElementById('reviewsGrid');
+  const reviewCount = document.getElementById('reviewCount');
+  if (reviewsGrid && reviewCount) {
+    reviewCount.textContent = reviewsGrid.querySelectorAll('.review-card').length;
+  }
+</script>
+
+</body>
+</html>
