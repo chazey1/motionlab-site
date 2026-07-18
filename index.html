@@ -104,6 +104,21 @@
     font-size:15px;
     margin-bottom:20px;
   }
+  .no-examples-yet{
+    border:1px dashed var(--line);
+    border-radius:10px;
+    padding:32px 24px;
+    display:flex;
+    align-items:center;
+    gap:16px;
+    color:var(--gray);
+    font-size:14px;
+    margin-bottom:20px;
+    font-family:var(--mono);
+  }
+  .no-examples-yet .no-ex-icon{font-size:22px; flex-shrink:0;}
+  .no-examples-yet a{color:var(--white); text-decoration:underline;}
+  .no-examples-yet a:hover{color:var(--red);}
   .video-grid{
     display:grid;
     grid-template-columns:repeat(3,1fr);
@@ -503,22 +518,7 @@
   }
 
   /* ---------- SECTION LABEL ---------- */
-  .section-label{
-    font-family:var(--mono);
-    font-size:12px;
-    letter-spacing:0.12em;
-    color:var(--red);
-    text-transform:uppercase;
-    margin-bottom:14px;
-    display:flex;
-    align-items:center;
-    gap:10px;
-  }
-  .section-label::before{
-    content:"";
-    width:18px; height:1px;
-    background:var(--red);
-  }
+  /* section-label styles moved to Extra animations block below */
 
   /* ---------- PACKAGES ---------- */
   .packages{
@@ -637,16 +637,7 @@
     max-width:300px;
     line-height:1.6;
   }
-  .pricing-subhead{
-    font-family:var(--mono);
-    font-size:13px;
-    letter-spacing:0.1em;
-    text-transform:uppercase;
-    color:var(--gray);
-    margin:0 0 22px;
-    padding-top:36px;
-    border-top:1px solid var(--line);
-  }
+  /* pricing-subhead styles moved to Extra animations block below */
   .pricing > .wrap > .pricing-subhead:first-of-type{
     padding-top:0;
     border-top:none;
@@ -817,6 +808,137 @@
   }
 
   section{scroll-margin-top:80px;}
+
+  /* ---------- Extra animations ---------- */
+
+  /* Floating particles in hero */
+  .hero-particles{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+  }
+  .particle{
+    position:absolute;
+    width:3px; height:3px;
+    border-radius:50%;
+    background:var(--red);
+    opacity:0;
+    animation:floatUp var(--dur, 6s) ease-in var(--delay, 0s) infinite;
+  }
+  @keyframes floatUp{
+    0%{opacity:0; transform:translateY(0) scale(0.5);}
+    10%{opacity:0.6;}
+    90%{opacity:0.1;}
+    100%{opacity:0; transform:translateY(-60vh) scale(1.2);}
+  }
+
+  /* Shimmer sweep on section labels */
+  @keyframes shimmer{
+    0%{background-position:200% center;}
+    100%{background-position:-200% center;}
+  }
+  .section-label{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    margin-bottom:14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:linear-gradient(90deg, var(--red) 0%, #ff8080 40%, var(--red) 60%, var(--red) 100%);
+    background-size:200% auto;
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    animation:shimmer 4s linear infinite;
+  }
+  .section-label::before{
+    content:"";
+    width:18px; height:1px;
+    background:var(--red);
+    flex-shrink:0;
+  }
+
+  /* Glowing border pulse on featured cards */
+  @keyframes borderPulse{
+    0%,100%{box-shadow:0 0 0 0 rgba(255,68,68,0);}
+    50%{box-shadow:0 0 18px 2px rgba(255,68,68,0.25);}
+  }
+  .price-card.featured, .package-card.featured{
+    animation:borderPulse 2.8s ease-in-out infinite;
+  }
+
+  /* Stat numbers count-up shimmer */
+  .hero-strip .num{
+    font-family:var(--mono);
+    font-size:26px;
+    font-weight:700;
+    position:relative;
+    display:inline-block;
+  }
+  .hero-strip.is-visible .num{
+    animation:countPop 0.5s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  @keyframes countPop{
+    0%{transform:scale(0.7); opacity:0;}
+    100%{transform:scale(1); opacity:1;}
+  }
+
+  /* Pricing subhead slide-in line */
+  .pricing-subhead{
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--gray);
+    margin:0 0 22px;
+    padding-top:36px;
+    border-top:1px solid var(--line);
+    position:relative;
+    overflow:hidden;
+  }
+  .pricing-subhead::after{
+    content:"";
+    position:absolute;
+    left:-100%; top:0;
+    width:100%; height:1px;
+    background:linear-gradient(90deg, transparent, var(--red), transparent);
+    animation:slideRule 3s ease-in-out infinite;
+  }
+  @keyframes slideRule{
+    0%{left:-100%;}
+    50%{left:100%;}
+    100%{left:100%;}
+  }
+
+  /* Video card hover glow */
+  .video-card:hover{
+    box-shadow:0 0 24px rgba(255,68,68,0.2);
+    border-color:var(--red);
+  }
+
+  /* Review card hover border now has glow too */
+  .review-card:hover{
+    box-shadow:0 0 18px rgba(255,68,68,0.15);
+  }
+
+  /* Hero tagline pulse */
+  .tagline{
+    margin-top:20px;
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--white);
+    font-weight:700;
+    animation:taglinePulse 3s ease-in-out infinite;
+  }
+  @keyframes taglinePulse{
+    0%,100%{opacity:1;}
+    50%{opacity:0.5;}
+  }
 </style>
 </head>
 <body>
@@ -841,6 +963,7 @@
 
   <!-- HERO -->
   <section class="hero">
+    <div class="hero-particles" id="heroParticles"></div>
     <div class="wrap">
       <h1 class="hero-anim" style="animation-delay:0s">Edits that make<br>your <span class="cut">server</span><br>worth joining.</h1>
       <p class="hero-sub hero-anim" style="animation-delay:0.15s">We aim to provide the best marketing solutions out there for your channel or a Minecraft server!</p>
@@ -957,11 +1080,11 @@
       <h3 class="pricing-subhead">Growth Packages</h3>
       <div class="package-grid">
         <div class="package-card reveal">
-          <div class="audience">Tier One Shorts</div>
+          <div class="audience">Tier One Shorts — $4 each</div>
           <h3>Growth — Starter</h3>
           <div class="price">$22 / order</div>
           <ul>
-            <li>5× Tier One Shorts</li>
+            <li>5× Tier One Shorts ($4 each)</li>
             <li>Full account management</li>
             <li>1 revision per short</li>
             <li>2–3 day turnaround</li>
@@ -970,11 +1093,11 @@
 
         <div class="package-card featured reveal">
           <div class="badge">MOST BOOKED</div>
-          <div class="audience">Tier Two Shorts</div>
+          <div class="audience">Tier Two Shorts — $6 each</div>
           <h3>Growth — Enhanced</h3>
           <div class="price">$32 / order</div>
           <ul>
-            <li>5× Tier Two Shorts</li>
+            <li>5× Tier Two Shorts ($6 each)</li>
             <li>Full account management</li>
             <li>1 revision per short</li>
             <li>2–3 day turnaround</li>
@@ -985,11 +1108,11 @@
       <h3 class="pricing-subhead">Scaling Packages</h3>
       <div class="package-grid">
         <div class="package-card reveal">
-          <div class="audience">Tier One Shorts</div>
+          <div class="audience">Tier One Shorts — $4 each</div>
           <h3>Scaling — Starter</h3>
           <div class="price">$40 / order</div>
           <ul>
-            <li>10× Tier One Shorts</li>
+            <li>10× Tier One Shorts ($4 each)</li>
             <li>Full account management</li>
             <li>1 revision per short</li>
             <li>2–3 day turnaround</li>
@@ -997,11 +1120,11 @@
         </div>
 
         <div class="package-card reveal">
-          <div class="audience">Tier Two Shorts</div>
+          <div class="audience">Tier Two Shorts — $6 each</div>
           <h3>Scaling — Enhanced</h3>
           <div class="price">$60 / order</div>
           <ul>
-            <li>10× Tier Two Shorts</li>
+            <li>10× Tier Two Shorts ($6 each)</li>
             <li>Full account management</li>
             <li>1 revision per short</li>
             <li>2–3 day turnaround</li>
@@ -1018,7 +1141,7 @@
       <h2 class="reveal">A few shorts, straight from the timeline.</h2>
       <p class="portfolio-note reveal">Tap any clip to play. More examples for every tier are posted in our Discord.</p>
 
-      <h3 class="pricing-subhead">Tier 02 — Enhanced Cut ($4)</h3>
+      <h3 class="pricing-subhead">Tier 01 — Starter Cut ($4)</h3>
       <div class="video-grid">
         <div class="video-card reveal">
           <video class="video-el" playsinline preload="none" poster="videos/posters/tier2-sample-1.jpg">
@@ -1040,14 +1163,16 @@
         </div>
       </div>
 
-      <h3 class="pricing-subhead">Tier 01 — Starter Cut ($2)</h3>
-      <div class="video-grid video-grid-single">
-        <div class="video-card reveal">
-          <video class="video-el" playsinline preload="none" poster="videos/posters/tier1-sample-1.jpg">
-            <source src="videos/tier1-sample-1.mp4" type="video/mp4">
-          </video>
-          <button class="play-btn" aria-label="Play video">▶</button>
-        </div>
+      <h3 class="pricing-subhead">Tier 02 — Enhanced Cut ($6)</h3>
+      <div class="no-examples-yet reveal">
+        <span class="no-ex-icon">🎬</span>
+        <p>Examples coming soon — check our <a href="https://discord.gg/FasVTp6YAv" target="_blank" rel="noopener">Discord</a> for the latest.</p>
+      </div>
+
+      <h3 class="pricing-subhead">Tier 03 — Premium Cut ($8)</h3>
+      <div class="no-examples-yet reveal">
+        <span class="no-ex-icon">🎬</span>
+        <p>Examples coming soon — check our <a href="https://discord.gg/FasVTp6YAv" target="_blank" rel="noopener">Discord</a> for the latest.</p>
       </div>
     </div>
   </section>
@@ -1063,25 +1188,26 @@
       <h3 class="pricing-subhead">Short-Form — pick your tier</h3>
       <div class="tier-grid">
 
-        <div class="price-card reveal reveal-stagger" style="--d:0s">
+        <div class="price-card featured reveal reveal-stagger" style="--d:0s">
+          <div class="badge">MOST BOOKED</div>
           <div class="audience">Tier 01</div>
           <h3>Starter Cut</h3>
-          <div class="price">$2 / video</div>
+          <div class="price">$4 / video</div>
           <ul>
             <li>Clean cut &amp; captions</li>
+            <li>Sound design &amp; pacing</li>
             <li>1 revision</li>
             <li>2–3 day turnaround</li>
           </ul>
         </div>
 
-        <div class="price-card featured reveal reveal-stagger" style="--d:0.1s">
-          <div class="badge">MOST BOOKED</div>
+        <div class="price-card reveal reveal-stagger" style="--d:0.1s">
           <div class="audience">Tier 02</div>
           <h3>Enhanced Cut</h3>
-          <div class="price">$4 / video</div>
+          <div class="price">$6 / video</div>
           <ul>
             <li>Everything in Tier 01</li>
-            <li>Sound design &amp; pacing pass</li>
+            <li>Advanced animations &amp; transitions</li>
             <li>1 revision</li>
             <li>2–3 day turnaround</li>
           </ul>
@@ -1090,10 +1216,10 @@
         <div class="price-card reveal reveal-stagger" style="--d:0.2s">
           <div class="audience">Tier 03</div>
           <h3>Premium Cut</h3>
-          <div class="price">$6 / video</div>
+          <div class="price">$8 / video</div>
           <ul>
             <li>Everything in Tier 02</li>
-            <li>Advanced animations &amp; transitions</li>
+            <li>Full cinematic grade &amp; effects</li>
             <li>1 revision</li>
             <li>2–3 day turnaround</li>
           </ul>
@@ -1233,6 +1359,39 @@
       if (video.currentTime === 0 || video.ended) card.classList.remove('is-playing');
     });
   });
+
+  // Floating particles in hero
+  const particlesEl = document.getElementById('heroParticles');
+  if (particlesEl) {
+    for (let i = 0; i < 22; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.cssText = `
+        left:${Math.random() * 100}%;
+        bottom:${Math.random() * 20}%;
+        --dur:${5 + Math.random() * 8}s;
+        --delay:${Math.random() * 8}s;
+        width:${2 + Math.random() * 3}px;
+        height:${2 + Math.random() * 3}px;
+        opacity:0;
+      `;
+      particlesEl.appendChild(p);
+    }
+  }
+
+  // Hero stat strip: trigger count-pop animation when it scrolls into view
+  const heroStrip = document.querySelector('.hero-strip');
+  if (heroStrip) {
+    const stripObserver = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('is-visible');
+          stripObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    stripObserver.observe(heroStrip);
+  }
 </script>
 
 </body>
