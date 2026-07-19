@@ -542,7 +542,7 @@
   }
   .package-grid{
     display:grid;
-    grid-template-columns:repeat(2,1fr);
+    grid-template-columns:repeat(3,1fr);
     gap:24px;
     margin-bottom:20px;
   }
@@ -607,7 +607,10 @@
     left:0;
     color:var(--gray-dim);
   }
-  @media (max-width:760px){
+  @media (max-width:1000px){
+    .package-grid{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (max-width:600px){
     .package-grid{grid-template-columns:1fr;}
   }
 
@@ -1082,7 +1085,7 @@
         <div class="package-card reveal">
           <div class="audience">Tier One Shorts — $4 each</div>
           <h3>Growth — Starter</h3>
-          <div class="price">$22 / order</div>
+          <div class="price">$19 / order</div>
           <ul>
             <li>5× Tier One Shorts ($4 each)</li>
             <li>Full account management</li>
@@ -1095,9 +1098,21 @@
           <div class="badge">MOST BOOKED</div>
           <div class="audience">Tier Two Shorts — $7 each</div>
           <h3>Growth — Enhanced</h3>
-          <div class="price">$32 / order</div>
+          <div class="price">$31 / order</div>
           <ul>
             <li>5× Tier Two Shorts ($7 each)</li>
+            <li>Full account management</li>
+            <li>1 revision per short</li>
+            <li>2–3 day turnaround</li>
+          </ul>
+        </div>
+
+        <div class="package-card reveal">
+          <div class="audience">Tier Three Shorts — $10 each</div>
+          <h3>Growth — Premium</h3>
+          <div class="price">$46 / order</div>
+          <ul>
+            <li>5× Tier Three Shorts ($10 each)</li>
             <li>Full account management</li>
             <li>1 revision per short</li>
             <li>2–3 day turnaround</li>
@@ -1110,7 +1125,7 @@
         <div class="package-card reveal">
           <div class="audience">Tier One Shorts — $4 each</div>
           <h3>Scaling — Starter</h3>
-          <div class="price">$40 / order</div>
+          <div class="price">$35 / order</div>
           <ul>
             <li>10× Tier One Shorts ($4 each)</li>
             <li>Full account management</li>
@@ -1122,9 +1137,21 @@
         <div class="package-card reveal">
           <div class="audience">Tier Two Shorts — $7 each</div>
           <h3>Scaling — Enhanced</h3>
-          <div class="price">$60 / order</div>
+          <div class="price">$65 / order</div>
           <ul>
             <li>10× Tier Two Shorts ($7 each)</li>
+            <li>Full account management</li>
+            <li>1 revision per short</li>
+            <li>2–3 day turnaround</li>
+          </ul>
+        </div>
+
+        <div class="package-card reveal">
+          <div class="audience">Tier Three Shorts — $10 each</div>
+          <h3>Scaling — Premium</h3>
+          <div class="price">$95 / order</div>
+          <ul>
+            <li>10× Tier Three Shorts ($10 each)</li>
             <li>Full account management</li>
             <li>1 revision per short</li>
             <li>2–3 day turnaround</li>
