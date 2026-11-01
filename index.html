@@ -95,6 +95,43 @@ footer .w{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 video,.fr{transition:transform .3s,box-shadow .3s}video:hover,.fr:hover{transform:scale(1.02);box-shadow:0 10px 30px rgba(255,68,68,.18)}
 nav ul a{position:relative}nav ul a:after{content:"";position:absolute;left:0;bottom:-4px;height:2px;width:0;background:var(--ac);transition:width .3s}nav ul a:hover:after{width:100%}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}.js .rev{opacity:1;transform:none}}
+
+.hero{min-height:calc(100vh - 60px);min-height:calc(100svh - 60px);display:flex;align-items:center;justify-content:center;padding:70px 0;background:#000}
+.hero:before{display:none}
+.hv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+.hs{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(8,8,10,.78) 0%,rgba(8,8,10,.6) 55%,rgba(8,8,10,.7) 100%),linear-gradient(180deg,rgba(11,11,13,.35) 0%,rgba(11,11,13,0) 40%,var(--bg) 100%)}
+.hero .w{z-index:2;width:100%}
+.hero h1{color:#fff;text-shadow:0 2px 24px rgba(0,0,0,.65)}
+.hero p{color:#ececf0;text-shadow:0 1px 14px rgba(0,0,0,.8)}
+.hero .btn.o{border-color:rgba(255,255,255,.45);background:rgba(0,0,0,.35);color:#fff}
+.hero .btn.o:hover{background:rgba(255,255,255,.12)}
+.hero .stats span{color:#d8d8de;text-shadow:0 1px 10px rgba(0,0,0,.8)}
+
+body{overflow-x:clip}
+.mb{display:none;background:none;border:1px solid var(--line);color:var(--tx);border-radius:8px;width:40px;height:40px;font-size:20px;cursor:pointer}
+@media(max-width:700px){
+.w{padding:0 16px}
+nav .w{gap:10px}.logo{margin-right:auto;font-size:15px}.logo img{height:24px}
+nav .btn{padding:9px 14px;font-size:14px}
+.mb{display:block}
+nav ul{display:none;position:absolute;top:60px;left:0;right:0;flex-direction:column;gap:0;background:var(--bg);border-bottom:1px solid var(--line)}
+body.mo nav ul{display:flex}
+nav ul a{display:block;padding:15px 20px;font-size:16px}
+nav ul a:after{display:none}
+.hero{padding:48px 0 40px}
+.hero h1{font-size:clamp(30px,9vw,40px)}
+.hero .cta{flex-direction:column;align-items:stretch}.hero .cta .btn{text-align:center}
+.stats{gap:20px 28px;margin-top:34px}.stats b{font-size:22px}
+section{padding:48px 0}.cta2{padding:56px 0}
+.g{grid-template-columns:1fr}
+.vs,.lf .vs{grid-template-columns:1fr}
+.vs>div{max-width:300px;width:100%;margin:0 auto}
+.lf .vs>div{max-width:none}
+.big{flex-direction:column;align-items:stretch;text-align:center}.big .btn{text-align:center}
+.c{padding:18px}
+footer .w{flex-direction:column;text-align:center}
+.c:hover{transform:none}
+}
 </style>
 <script>document.documentElement.className="js"</script>
 </head>
@@ -103,9 +140,10 @@ nav ul a{position:relative}nav ul a:after{content:"";position:absolute;left:0;bo
 <a class="logo" href="#"><img src="assets/logo-mark.png" alt="MotionLab logo">MOTIONLAB</a>
 <ul><li><a href="#reviews">Reviews</a></li><li><a href="#packages">Packages</a></li><li><a href="#work">Our Work</a></li><li><a href="#longform">Long-Form</a></li><li><a href="#pricing">Pricing</a></li></ul>
 <a class="btn" href="https://discord.gg/motionlab">Join Discord</a>
+<button class="mb" aria-label="Menu" onclick="document.body.classList.toggle('mo')">☰</button>
 </div></nav>
 
-<header class="hero"><div class="w">
+<header class="hero"><video class="hv" id="hv" src="videos/hero.mp4" poster="videos/hero-poster.jpg" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video><div class="hs"></div><div class="w">
 <h1>Edits that make your server worth joining.</h1>
 <p>We aim to provide the best marketing solutions out there for your channel or a Minecraft server!</p>
 <p><i>Your vision. Our motion.</i></p>
@@ -250,6 +288,8 @@ if(h.length){h.forEach(function(e){e.classList.remove('hid');e.dataset.x=1});thi
 else{box.querySelectorAll('[data-x]').forEach(function(e){e.classList.add('hid')});this.textContent='Show all reviews'}
 };
 
+if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){document.getElementById('hv').pause()}
+document.querySelectorAll('nav ul a').forEach(function(a){a.addEventListener('click',function(){document.body.classList.remove('mo')})});
 var io=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}})},{threshold:.12});
 document.querySelectorAll('section .eye,section h2,section .sub,section h3.t,.c,.vs>div,.big,.trust .w').forEach(function(el,i){el.classList.add('rev');el.style.setProperty('--d',(i%4)*0.08+'s');io.observe(el)});
 </script>
